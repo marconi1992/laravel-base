@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Contracts\Services\IActivationService;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -32,13 +33,20 @@ class RegisterController extends Controller
     /**
      * Create a new controller instance.
      *
-     * @return void
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('guest', ['except' => 'activateUser']);
     }
 
+
+    public function activateUser(IActivationService $activationService, $token)
+    {
+        $activationService->activateUser($token);
+
+        return redirect($this->redirectPath());
+    }
+    
     /**
      * Get a validator for an incoming registration request.
      *
