@@ -7,7 +7,7 @@ use App\Contracts\Services\IActivationService;
 use App\Repositories\ActivationRepository;
 use App\Services\ActivationService;
 use Illuminate\Database\Connection;
-use Illuminate\Contracts\Mail\Mailer;
+use Illuminate\Mail\Mailer;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

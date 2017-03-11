@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Contracts\Repositories\IActivationRepository;
 use App\Contracts\Services\IActivationService;
+use App\Mail\UserActivation;
 use App\User;
-use Illuminate\Contracts\Mail\Mailer;
+use App\ViewModels\UserActivationViewModel;
+use Illuminate\Mail\Mailer;
 use Illuminate\Mail\Message;
 
 class ActivationService implements IActivationService
@@ -40,11 +42,10 @@ class ActivationService implements IActivationService
         $token = $this->activationRepo->createActivation($user->id);
 
         $link = route('user.activate', $token);
-        $message = sprintf('Activate account <a href="%s">%s</a>', $link, $link);
-
-        $this->mailer->raw($message, function (Message $m) use ($user) {
-            $m->to($user->email)->subject('Activation mail');
-        });
+        
+        $model = new UserActivationViewModel($user, $link);
+        
+        $this->mailer->to($user->email)->send(new UserActivation($model));
     }
 
     /**
