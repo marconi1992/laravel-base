@@ -246,11 +246,11 @@
                 <table>
                     <tr>
                         <td>
-                            <h3>Hi, {{ $model->user->name }}</h3>
-                            <p class="lead">Phasellus dictum sapien a neque luctus cursus. Pellentesque sem dolor, fringilla et pharetra vitae.</p>
+                            <h3>{{ trans('user-activation.email.header')}}{{ $model->user->name }}</h3>
+                            <p class="lead">{{ trans('user-activation.email.message')}}</p>
 
                             <p class="callout">
-                                Phasellus dictum sapien a neque luctus cursus. Pellentesque sem dolor, fringilla et pharetra vitae. <a href="{{ $model->link }}">Click it! &raquo;</a>
+                                {{ trans('user-activation.email.message_link')}}<a href="{{ $model->link }}">Click it! &raquo;</a>
                             </p>
                         </td>
                     </tr>
