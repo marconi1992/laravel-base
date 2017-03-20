@@ -21,3 +21,6 @@ Route::get('/home', 'HomeController@index');
 
 
 Route::get('user/activation/{token}', 'Auth\RegisterController@activateUser')->name('user.activate');
+
+Route::get('auth/{provider}', [ 'as' => "auth.provider", 'uses' => 'Auth\LoginController@redirectToProvider']);
+Route::get('auth/{provider}/callback', 'Auth\RegisterController@handleProviderCallback');

@@ -59,6 +59,15 @@
                                 </a>
                             </div>
                         </div>
+                        <hr>
+                        <div class="form-group">
+                            <p class="text-center lead">Accede con</p>
+                            <div class="col-md-8 col-md-offset-4">
+                                <a href="{{ route("auth.provider", ["provider" => "facebook"]) }}" class="btn btn-default">
+                                    <i class="fa fa-facebook" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>

@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Contracts\Services\IActivationService;
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Laravel\Socialite\Facades\Socialite;
 
 class RegisterController extends Controller
 {
@@ -46,6 +48,48 @@ class RegisterController extends Controller
 
         return redirect($this->redirectPath());
     }
+
+    /**
+     * Obtain the user information from Facebook.
+     *
+     * @param string $provider
+     * @return Response
+     */
+    public function handleProviderCallback($provider)
+    {
+        $authUser = false;
+
+        if ($provider == "facebook") {
+            $authUser = Socialite::driver('facebook')->user();
+        } else {
+            abort(404);
+        }
+
+        if (!$authUser) {
+            return redirect()->to("/");
+        }
+
+        $user = User::where($provider . '_id', $authUser->id)->first();
+
+        if (!$user) {
+            $userData = $this->getUserDataFromProvider($authUser, $provider);
+            $user = $this->create($userData);
+        }
+
+        Auth::login($user, true);
+
+        return redirect()->to($this->redirectTo);
+    }
+
+
+    protected function getUserDataFromProvider($authUser, $provider)
+    {
+        return [
+            'name' => $authUser->name,
+            'email' => $authUser->email,
+            $provider . '_id' => $authUser->id
+        ];
+    }
     
     /**
      * Get a validator for an incoming registration request.
@@ -70,10 +114,10 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        if (array_has($data, "password")) {
+            $data["password"] = bcrypt($data["password"]);
+        }
+
+        return User::create($data);
     }
 }
